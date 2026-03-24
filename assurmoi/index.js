@@ -1,15 +1,22 @@
 const express = require("express");
 const app = express();
 require("dotenv").config();
+const cors = require("cors");
+const initRoutes = require("./routes");
 
-const PORT = process.env.PORT ?? 3000;
+const PORT = process.env.PORT || 3000;
+app.use(express.json());
+app.use(
+  cors({
+    credentials: true,
+    origin: ["http://example.com", "*"], //whitelist of domains
+  }),
+);
 
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(`app lancé sur http://localhost:${PORT}`);
-});
+initRoutes(app);
 
-app.get("/", (req, res) => {
-  res.send("API OK");
+app.listen(PORT, () => {
+  console.log("server running on port ", PORT);
 });
 
 module.exports = app;
