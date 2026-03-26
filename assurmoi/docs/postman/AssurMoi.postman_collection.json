@@ -1,0 +1,1441 @@
+{
+  "info": {
+    "_postman_id": "a0a4e03a-9186-4620-b405-1e36791395af",
+    "name": "AssurMoi API",
+    "description": "Collection Postman pour tester l'API AssurMoi: auth, 2FA, logout et ressources protegees.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000/api"
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Login status ok', function () {",
+                  "  pm.expect(pm.response.code).to.be.oneOf([200, 400, 401]);",
+                  "});",
+                  "",
+                  "var json = {};",
+                  "try { json = pm.response.json(); } catch (e) {}",
+                  "",
+                  "if (json && json.data && json.data.token) {",
+                  "  pm.collectionVariables.set('token', json.data.token);",
+                  "}",
+                  "",
+                  "if (json && json.data && json.data.utilisateur_id) {",
+                  "  pm.collectionVariables.set('userId', String(json.data.utilisateur_id));",
+                  "}",
+                  "",
+                  "if (json && json.data && json.data.challenge === '2fa_required') {",
+                  "  pm.collectionVariables.set('twoFactorUserId', String(json.data.utilisateur_id || ''));",
+                  "  pm.collectionVariables.set('twoFactorCode', String(json.data.code_demo || ''));",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{loginEmail}}\",\n  \"mot_de_passe\": \"{{loginPassword}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Connexion utilisateur. Si 2FA active, le code demo est stocke dans les variables de collection."
+          },
+          "response": []
+        },
+        {
+          "name": "Register",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json = {};",
+                  "try { json = pm.response.json(); } catch (e) {}",
+                  "if (json && json.data && json.data.id) {",
+                  "  pm.collectionVariables.set('userId', String(json.data.id));",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nom\": \"Martin\",\n  \"prenom\": \"Claire\",\n  \"email\": \"claire.martin+postman@example.com\",\n  \"telephone\": \"0601020304\",\n  \"mot_de_passe\": \"Password123!\",\n  \"statut\": \"actif\",\n  \"double_auth_active\": false,\n  \"role_nom\": \"ASSURE\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Verify 2FA",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json = {};",
+                  "try { json = pm.response.json(); } catch (e) {}",
+                  "if (json && json.data && json.data.token) {",
+                  "  pm.collectionVariables.set('token', json.data.token);",
+                  "}",
+                  "if (json && json.data && json.data.utilisateur_id) {",
+                  "  pm.collectionVariables.set('userId', String(json.data.utilisateur_id));",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"utilisateur_id\": {{twoFactorUserId}},\n  \"code\": \"{{twoFactorCode}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/2fa/verify",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "2fa",
+                "verify"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Forgot Password",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json = {};",
+                  "try { json = pm.response.json(); } catch (e) {}",
+                  "if (json && json.data && json.data.token_demo) {",
+                  "  pm.collectionVariables.set('resetToken', String(json.data.token_demo));",
+                  "}",
+                  "if (json && json.data && json.data.utilisateur_id) {",
+                  "  pm.collectionVariables.set('userId', String(json.data.utilisateur_id));",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{loginEmail}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/forgot-password",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "forgot-password"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Reset Password",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"{{resetToken}}\",\n  \"nouveau_mot_de_passe\": \"NewPassword123!\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/reset-password",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "reset-password"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/auth/logout",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "logout"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Roles",
+      "item": [
+        {
+          "name": "List Roles",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/roles",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "roles"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "List Users",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get User By Id",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/users/{{userId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "{{userId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json = {};",
+                  "try { json = pm.response.json(); } catch (e) {}",
+                  "if (json && json.data && json.data.id) {",
+                  "  pm.collectionVariables.set('userId', String(json.data.id));",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nom\": \"Bernard\",\n  \"prenom\": \"Leo\",\n  \"email\": \"leo.bernard+postman@example.com\",\n  \"telephone\": \"0600000000\",\n  \"mot_de_passe\": \"Password123!\",\n  \"statut\": \"actif\",\n  \"double_auth_active\": true,\n  \"role_nom\": \"ASSURE\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"telephone\": \"0611223344\",\n  \"double_auth_active\": false,\n  \"statut\": \"actif\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/{{userId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "{{userId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/users/{{userId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "{{userId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Assures",
+      "item": [
+        {
+          "name": "List Assures",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/assures",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "assures"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Assure By Id",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/assures/{{assureId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "assures",
+                "{{assureId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Assure",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json = {};",
+                  "try { json = pm.response.json(); } catch (e) {}",
+                  "if (json && json.data && json.data.id) {",
+                  "  pm.collectionVariables.set('assureId', String(json.data.id));",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"utilisateur_id\": {{userId}},\n  \"nom\": \"Bernard\",\n  \"prenom\": \"Leo\",\n  \"email\": \"leo.bernard+postman@example.com\",\n  \"telephone\": \"0611223344\",\n  \"adresse\": \"12 rue de Paris, 75010 Paris\",\n  \"type_assure\": \"particulier\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/assures",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "assures"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Assure",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"adresse\": \"34 avenue Victor Hugo, 75016 Paris\",\n  \"telephone\": \"0677889900\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/assures/{{assureId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "assures",
+                "{{assureId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Assure",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/assures/{{assureId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "assures",
+                "{{assureId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Contrats",
+      "item": [
+        {
+          "name": "List Contrats",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/contrats",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "contrats"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Contrat By Id",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/contrats/{{contratId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "contrats",
+                "{{contratId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Contrat",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json = {};",
+                  "try { json = pm.response.json(); } catch (e) {}",
+                  "if (json && json.data && json.data.id) {",
+                  "  pm.collectionVariables.set('contratId', String(json.data.id));",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"assure_id\": {{assureId}},\n  \"numero_contrat\": \"CTR-POSTMAN-001\",\n  \"type_contrat\": \"auto_tous_risques\",\n  \"franchise\": 350.00,\n  \"date_debut\": \"2026-01-01\",\n  \"date_fin\": \"2026-12-31\",\n  \"statut\": \"actif\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/contrats",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "contrats"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Contrat",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"franchise\": 450,\n  \"statut\": \"actif\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/contrats/{{contratId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "contrats",
+                "{{contratId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Contrat",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/contrats/{{contratId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "contrats",
+                "{{contratId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Vehicules",
+      "item": [
+        {
+          "name": "List Vehicules",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/vehicules",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "vehicules"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Vehicule By Id",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/vehicules/{{vehiculeId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "vehicules",
+                "{{vehiculeId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Vehicule",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json = {};",
+                  "try { json = pm.response.json(); } catch (e) {}",
+                  "if (json && json.data && json.data.id) {",
+                  "  pm.collectionVariables.set('vehiculeId', String(json.data.id));",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"contrat_id\": {{contratId}},\n  \"immatriculation\": \"AA-123-BB\",\n  \"marque\": \"Peugeot\",\n  \"modele\": \"208\",\n  \"valeur_argus\": 14500\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/vehicules",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "vehicules"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Vehicule",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"modele\": \"208 GT\",\n  \"valeur_argus\": 15000\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/vehicules/{{vehiculeId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "vehicules",
+                "{{vehiculeId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Vehicule",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/vehicules/{{vehiculeId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "vehicules",
+                "{{vehiculeId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Sinistres",
+      "item": [
+        {
+          "name": "List Sinistres",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/sinistres",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sinistres"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Sinistres By Assure",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/sinistres?assure_id={{assureId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sinistres"
+              ],
+              "query": [
+                {
+                  "key": "assure_id",
+                  "value": "{{assureId}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Sinistre By Id",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/sinistres/{{sinistreId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sinistres",
+                "{{sinistreId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Sinistre",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json = {};",
+                  "try { json = pm.response.json(); } catch (e) {}",
+                  "if (json && json.data && json.data.id) {",
+                  "  pm.collectionVariables.set('sinistreId', String(json.data.id));",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"assure_id\": {{assureId}},\n  \"vehicule_id\": {{vehiculeId}},\n  \"cree_par\": {{userId}},\n  \"date_heure_appel\": \"2026-03-26T09:15:00.000Z\",\n  \"date_heure_sinistre\": \"2026-03-26T08:40:00.000Z\",\n  \"conducteur_nom\": \"Bernard\",\n  \"conducteur_prenom\": \"Leo\",\n  \"conducteur_est_assure\": true,\n  \"contexte\": \"Collision legere sur parking.\",\n  \"responsabilite_engagee\": false,\n  \"pourcentage_responsabilite\": 0,\n  \"statut\": \"brouillon\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/sinistres",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sinistres"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Sinistre",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"statut\": \"complet\",\n  \"responsabilite_engagee\": true,\n  \"pourcentage_responsabilite\": 50,\n  \"scenario\": \"reparable\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/sinistres/{{sinistreId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sinistres",
+                "{{sinistreId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Dossiers",
+      "item": [
+        {
+          "name": "List Dossiers",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/dossiers",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dossiers"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Dossier By Id",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/dossiers/{{dossierId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dossiers",
+                "{{dossierId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Dossier",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json = {};",
+                  "try { json = pm.response.json(); } catch (e) {}",
+                  "if (json && json.data && json.data.id) {",
+                  "  pm.collectionVariables.set('dossierId', String(json.data.id));",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sinistre_id\": {{sinistreId}},\n  \"numero_dossier\": \"DOS-POSTMAN-001\",\n  \"charge_suivi_id\": {{userId}},\n  \"gestionnaire_id\": {{userId}},\n  \"scenario\": \"reparable\",\n  \"statut\": \"initialise\",\n  \"date_ouverture\": \"2026-03-26T10:00:00.000Z\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/dossiers",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dossiers"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Dossier",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"statut\": \"en_attente_expertise\",\n  \"scenario\": \"reparable\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/dossiers/{{dossierId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dossiers",
+                "{{dossierId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Etapes Dossier",
+      "item": [
+        {
+          "name": "List Etapes",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/etapes-dossier",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "etapes-dossier"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Etape By Id",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/etapes-dossier/{{etapeId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "etapes-dossier",
+                "{{etapeId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Etape",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json = {};",
+                  "try { json = pm.response.json(); } catch (e) {}",
+                  "if (json && json.data && json.data.id) {",
+                  "  pm.collectionVariables.set('etapeId', String(json.data.id));",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dossier_id\": {{dossierId}},\n  \"nom_etape\": \"Analyse du dossier\",\n  \"statut\": \"en_attente\",\n  \"date_debut\": \"2026-03-26T10:30:00.000Z\",\n  \"commentaire\": \"Creation via Postman\",\n  \"validation_requise\": true,\n  \"validation_effectuee\": false\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/etapes-dossier",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "etapes-dossier"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Etape",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"statut\": \"en_cours\",\n  \"validation_effectuee\": true,\n  \"commentaire\": \"Etape demarree\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/etapes-dossier/{{etapeId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "etapes-dossier",
+                "{{etapeId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Etape",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/etapes-dossier/{{etapeId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "etapes-dossier",
+                "{{etapeId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Documents",
+      "item": [
+        {
+          "name": "List Documents",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/documents",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "documents"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Document By Id",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/documents/{{documentId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "documents",
+                "{{documentId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Document",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json = {};",
+                  "try { json = pm.response.json(); } catch (e) {}",
+                  "if (json && json.data && json.data.id) {",
+                  "  pm.collectionVariables.set('documentId', String(json.data.id));",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sinistre_id\": {{sinistreId}},\n  \"dossier_id\": {{dossierId}},\n  \"etape_id\": {{etapeId}},\n  \"type_document\": \"facture\",\n  \"nom_fichier\": \"facture-reparation.pdf\",\n  \"chemin_fichier\": \"/uploads/facture-reparation.pdf\",\n  \"date_depot\": \"2026-03-26T11:00:00.000Z\",\n  \"valide\": false,\n  \"valide_par\": {{userId}}\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/documents",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "documents"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Document",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"valide\": true,\n  \"valide_par\": {{userId}}\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/documents/{{documentId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "documents",
+                "{{documentId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Document",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/documents/{{documentId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "documents",
+                "{{documentId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Notifications",
+      "item": [
+        {
+          "name": "List Notifications",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/notifications",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "notifications"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Notification By Id",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/notifications/{{notificationId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "notifications",
+                "{{notificationId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Notification",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json = {};",
+                  "try { json = pm.response.json(); } catch (e) {}",
+                  "if (json && json.data && json.data.id) {",
+                  "  pm.collectionVariables.set('notificationId', String(json.data.id));",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"utilisateur_id\": {{userId}},\n  \"assure_id\": {{assureId}},\n  \"dossier_id\": {{dossierId}},\n  \"type_notification\": \"mail\",\n  \"message\": \"Votre dossier a bien ete pris en charge.\",\n  \"date_envoi\": \"2026-03-26T11:15:00.000Z\",\n  \"statut\": \"envoyee\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/notifications",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "notifications"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Notification",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"statut\": \"lue\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/notifications/{{notificationId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "notifications",
+                "{{notificationId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Notification",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/notifications/{{notificationId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "notifications",
+                "{{notificationId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Historiques",
+      "item": [
+        {
+          "name": "List Historiques",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/historiques",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "historiques"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Historiques By Dossier",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/historiques?dossier_id={{dossierId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "historiques"
+              ],
+              "query": [
+                {
+                  "key": "dossier_id",
+                  "value": "{{dossierId}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

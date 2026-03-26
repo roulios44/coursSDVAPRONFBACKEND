@@ -1,0 +1,666 @@
+openapi: 3.0.3
+info:
+  title: AssurMoi API
+  version: 1.0.0
+  description: API Express/Node pour la gestion des sinistres assurance.
+servers:
+  - url: http://localhost:3000
+paths:
+  /:
+    get:
+      summary: Vérification API
+      responses:
+        '200':
+          description: API disponible
+  /roles:
+    get:
+      summary: Lister les rôles
+      responses:
+        '200':
+          description: Liste des rôles
+  /auth/login:
+    post:
+      summary: Connexion utilisateur
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginInput'
+      responses:
+        '200':
+          description: Connexion réussie ou 2FA requise
+  /auth/2fa/verify:
+    post:
+      summary: Vérifier le code 2FA
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [utilisateur_id, code]
+              properties:
+                utilisateur_id:
+                  type: integer
+                code:
+                  type: string
+      responses:
+        '200':
+          description: 2FA validée
+  /auth/forgot-password:
+    post:
+      summary: Générer un token de réinitialisation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email]
+              properties:
+                email:
+                  type: string
+                  format: email
+      responses:
+        '200':
+          description: Token généré
+  /auth/reset-password:
+    post:
+      summary: Réinitialiser le mot de passe
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [token, nouveau_mot_de_passe]
+              properties:
+                token:
+                  type: string
+                nouveau_mot_de_passe:
+                  type: string
+      responses:
+        '200':
+          description: Mot de passe modifié
+  /users:
+    get:
+      summary: Lister les utilisateurs
+      responses:
+        '200':
+          description: Liste des utilisateurs
+    post:
+      summary: Créer un utilisateur
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserInput'
+      responses:
+        '201':
+          description: Utilisateur créé
+  /users/{id}:
+    get:
+      summary: Récupérer un utilisateur
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          description: Utilisateur
+    put:
+      summary: Mettre à jour un utilisateur
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserInput'
+      responses:
+        '200':
+          description: Utilisateur mis à jour
+    delete:
+      summary: Supprimer un utilisateur
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '204':
+          description: Utilisateur supprimé
+  /assures:
+    get:
+      summary: Lister les assurés
+      responses:
+        '200':
+          description: Liste des assurés
+    post:
+      summary: Créer un assuré
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Assure'
+      responses:
+        '201':
+          description: Assuré créé
+  /assures/{id}:
+    get:
+      summary: Détail assuré
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          description: Assuré
+    put:
+      summary: Modifier assuré
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Assure'
+      responses:
+        '200':
+          description: Assuré mis à jour
+    delete:
+      summary: Supprimer assuré
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '204':
+          description: Assuré supprimé
+  /vehicules:
+    get:
+      summary: Lister les véhicules
+      responses:
+        '200':
+          description: Liste des véhicules
+    post:
+      summary: Créer un véhicule
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Vehicule'
+      responses:
+        '201':
+          description: Véhicule créé
+  /vehicules/{id}:
+    get:
+      summary: Détail véhicule
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          description: Véhicule
+    put:
+      summary: Modifier véhicule
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Vehicule'
+      responses:
+        '200':
+          description: Véhicule mis à jour
+    delete:
+      summary: Supprimer véhicule
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '204':
+          description: Véhicule supprimé
+  /sinistres:
+    get:
+      summary: Lister les sinistres
+      parameters:
+        - in: query
+          name: assure_id
+          schema:
+            type: integer
+        - in: query
+          name: statut
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Liste des sinistres
+    post:
+      summary: Créer un sinistre
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SinistreInput'
+      responses:
+        '201':
+          description: Sinistre créé
+  /sinistres/{id}:
+    get:
+      summary: Détail sinistre
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          description: Sinistre
+    put:
+      summary: Mettre à jour un sinistre
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SinistreInput'
+      responses:
+        '200':
+          description: Sinistre mis à jour. Si statut=complet, un dossier peut être créé automatiquement.
+  /dossiers:
+    get:
+      summary: Lister les dossiers
+      responses:
+        '200':
+          description: Liste des dossiers
+    post:
+      summary: Créer un dossier
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DossierInput'
+      responses:
+        '201':
+          description: Dossier créé
+  /dossiers/{id}:
+    get:
+      summary: Détail dossier avec étapes et documents
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          description: Dossier détaillé
+    put:
+      summary: Mettre à jour le dossier
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DossierInput'
+      responses:
+        '200':
+          description: Dossier mis à jour
+  /etapes-dossier:
+    get:
+      summary: Lister les étapes de dossier
+      responses:
+        '200':
+          description: Liste des étapes
+    post:
+      summary: Créer une étape de dossier
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EtapeDossier'
+      responses:
+        '201':
+          description: Étape créée
+  /etapes-dossier/{id}:
+    get:
+      summary: Détail étape
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          description: Étape
+    put:
+      summary: Mettre à jour une étape
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EtapeDossier'
+      responses:
+        '200':
+          description: Étape mise à jour
+    delete:
+      summary: Supprimer une étape
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '204':
+          description: Étape supprimée
+  /documents:
+    get:
+      summary: Lister les documents
+      responses:
+        '200':
+          description: Liste des documents
+    post:
+      summary: Créer un document
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Document'
+      responses:
+        '201':
+          description: Document créé
+  /documents/{id}:
+    get:
+      summary: Détail document
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          description: Document
+    put:
+      summary: Mettre à jour un document
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Document'
+      responses:
+        '200':
+          description: Document mis à jour
+    delete:
+      summary: Supprimer un document
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '204':
+          description: Document supprimé
+  /notifications:
+    get:
+      summary: Lister les notifications
+      responses:
+        '200':
+          description: Liste des notifications
+    post:
+      summary: Créer une notification
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Notification'
+      responses:
+        '201':
+          description: Notification créée
+  /notifications/{id}:
+    get:
+      summary: Détail notification
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '200':
+          description: Notification
+    put:
+      summary: Mettre à jour une notification
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Notification'
+      responses:
+        '200':
+          description: Notification mise à jour
+    delete:
+      summary: Supprimer une notification
+      parameters:
+        - $ref: '#/components/parameters/Id'
+      responses:
+        '204':
+          description: Notification supprimée
+  /historiques:
+    get:
+      summary: Lister les historiques
+      parameters:
+        - in: query
+          name: sinistre_id
+          schema:
+            type: integer
+        - in: query
+          name: dossier_id
+          schema:
+            type: integer
+        - in: query
+          name: utilisateur_id
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Historique filtrable
+components:
+  parameters:
+    Id:
+      in: path
+      name: id
+      required: true
+      schema:
+        type: integer
+  schemas:
+    LoginInput:
+      type: object
+      required: [email, mot_de_passe]
+      properties:
+        email:
+          type: string
+          format: email
+        mot_de_passe:
+          type: string
+    UserInput:
+      type: object
+      required: [nom, prenom, email, mot_de_passe, role_nom]
+      properties:
+        nom:
+          type: string
+        prenom:
+          type: string
+        email:
+          type: string
+          format: email
+        telephone:
+          type: string
+        mot_de_passe:
+          type: string
+        statut:
+          type: string
+          enum: [actif, inactif]
+        double_auth_active:
+          type: boolean
+        role_nom:
+          type: string
+          enum: [ADMIN, GESTIONNAIRE, CHARGE_SUIVI, CHARGE_CLIENTELE, ASSURE]
+    Assure:
+      type: object
+      properties:
+        utilisateur_id:
+          type: integer
+        nom:
+          type: string
+        prenom:
+          type: string
+        email:
+          type: string
+        telephone:
+          type: string
+        adresse:
+          type: string
+        type_assure:
+          type: string
+          enum: [particulier, professionnel]
+    Vehicule:
+      type: object
+      properties:
+        assure_id:
+          type: integer
+        immatriculation:
+          type: string
+        marque:
+          type: string
+        modele:
+          type: string
+        valeur_argus:
+          type: number
+    SinistreInput:
+      type: object
+      required:
+        - assure_id
+        - vehicule_id
+        - cree_par
+        - date_heure_appel
+        - date_heure_sinistre
+        - conducteur_nom
+        - conducteur_prenom
+        - conducteur_est_assure
+        - contexte
+        - responsabilite_engagee
+      properties:
+        assure_id:
+          type: integer
+        vehicule_id:
+          type: integer
+        cree_par:
+          type: integer
+        date_heure_appel:
+          type: string
+          format: date-time
+        date_heure_sinistre:
+          type: string
+          format: date-time
+        conducteur_nom:
+          type: string
+        conducteur_prenom:
+          type: string
+        conducteur_est_assure:
+          type: boolean
+        contexte:
+          type: string
+        responsabilite_engagee:
+          type: boolean
+        pourcentage_responsabilite:
+          type: integer
+          enum: [0, 50, 100]
+        statut:
+          type: string
+          enum: [brouillon, complet, en_cours, clos]
+        charge_suivi_id:
+          type: integer
+        gestionnaire_id:
+          type: integer
+        scenario:
+          type: string
+          enum: [reparable, non_reparable]
+    DossierInput:
+      type: object
+      properties:
+        sinistre_id:
+          type: integer
+        numero_dossier:
+          type: string
+        charge_suivi_id:
+          type: integer
+        gestionnaire_id:
+          type: integer
+        scenario:
+          type: string
+          enum: [reparable, non_reparable]
+        statut:
+          type: string
+        date_ouverture:
+          type: string
+          format: date-time
+        date_cloture:
+          type: string
+          format: date-time
+    EtapeDossier:
+      type: object
+      properties:
+        dossier_id:
+          type: integer
+        nom_etape:
+          type: string
+        statut:
+          type: string
+          enum: [en_attente, en_cours, termine]
+        date_debut:
+          type: string
+          format: date-time
+        date_fin:
+          type: string
+          format: date-time
+        commentaire:
+          type: string
+        validation_requise:
+          type: boolean
+        validation_effectuee:
+          type: boolean
+    Document:
+      type: object
+      properties:
+        sinistre_id:
+          type: integer
+        dossier_id:
+          type: integer
+        etape_id:
+          type: integer
+        type_document:
+          type: string
+        nom_fichier:
+          type: string
+        chemin_fichier:
+          type: string
+        date_depot:
+          type: string
+          format: date-time
+        valide:
+          type: boolean
+        valide_par:
+          type: integer
+    Notification:
+      type: object
+      properties:
+        utilisateur_id:
+          type: integer
+        assure_id:
+          type: integer
+        dossier_id:
+          type: integer
+        type_notification:
+          type: string
+          enum: [push, mail]
+        message:
+          type: string
+        date_envoi:
+          type: string
+          format: date-time
+        statut:
+          type: string
+          enum: [envoyee, lue, erreur]

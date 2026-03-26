@@ -1,0 +1,3416 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "AssurMoi API",
+    "version": "1.0.0",
+    "description": "API scolaire de gestion des sinistres AssurMoi."
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Authentification",
+      "description": "Connexion, double authentification email et réinitialisation du mot de passe"
+    },
+    {
+      "name": "roles"
+    },
+    {
+      "name": "users"
+    },
+    {
+      "name": "assures"
+    },
+    {
+      "name": "contrats"
+    },
+    {
+      "name": "vehicules"
+    },
+    {
+      "name": "sinistres"
+    },
+    {
+      "name": "dossiers"
+    },
+    {
+      "name": "etapes dossier"
+    },
+    {
+      "name": "documents"
+    },
+    {
+      "name": "notifications"
+    },
+    {
+      "name": "historiques"
+    }
+  ],
+  "paths": {
+    "/api/roles": {
+      "get": {
+        "tags": [
+          "roles"
+        ],
+        "summary": "Lister les roles",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Role"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "roles"
+        ],
+        "summary": "Créer un role",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "nom": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "nom"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "item": {
+                      "$ref": "#/components/schemas/Role"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/roles/{id}": {
+      "get": {
+        "tags": [
+          "roles"
+        ],
+        "summary": "Récupérer un role",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "item": {
+                      "$ref": "#/components/schemas/Role"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "roles"
+        ],
+        "summary": "Modifier un role",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "nom": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "item": {
+                      "$ref": "#/components/schemas/Role"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "roles"
+        ],
+        "summary": "Supprimer un role",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      }
+    },
+    "/api/users": {
+      "get": {
+        "tags": [
+          "users"
+        ],
+        "summary": "Lister les users",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/User"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "users"
+        ],
+        "summary": "Créer un utilisateur",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "role_id": {
+                    "type": "integer"
+                  },
+                  "nom": {
+                    "type": "string"
+                  },
+                  "prenom": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  },
+                  "telephone": {
+                    "type": "string"
+                  },
+                  "mot_de_passe": {
+                    "type": "string"
+                  },
+                  "statut": {
+                    "type": "string"
+                  },
+                  "double_auth_active": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "role_id",
+                  "nom",
+                  "prenom",
+                  "email",
+                  "mot_de_passe",
+                  "statut"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "item": {
+                      "$ref": "#/components/schemas/User"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users/{id}": {
+      "get": {
+        "tags": [
+          "users"
+        ],
+        "summary": "Récupérer un utilisateur",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "item": {
+                      "$ref": "#/components/schemas/User"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "users"
+        ],
+        "summary": "Modifier un utilisateur",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "role_id": {
+                    "type": "integer"
+                  },
+                  "nom": {
+                    "type": "string"
+                  },
+                  "prenom": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  },
+                  "telephone": {
+                    "type": "string"
+                  },
+                  "mot_de_passe": {
+                    "type": "string"
+                  },
+                  "statut": {
+                    "type": "string"
+                  },
+                  "double_auth_active": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "item": {
+                      "$ref": "#/components/schemas/User"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "users"
+        ],
+        "summary": "Supprimer un utilisateur",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      }
+    },
+    "/api/assures": {
+      "get": {
+        "tags": [
+          "assures"
+        ],
+        "summary": "Lister les assures",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Assure"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "assures"
+        ],
+        "summary": "Créer un assuré",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "utilisateur_id": {
+                    "type": "integer"
+                  },
+                  "nom": {
+                    "type": "string"
+                  },
+                  "prenom": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  },
+                  "telephone": {
+                    "type": "string"
+                  },
+                  "adresse": {
+                    "type": "string"
+                  },
+                  "type_assure": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "nom",
+                  "prenom",
+                  "type_assure"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "item": {
+                      "$ref": "#/components/schemas/Assure"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/assures/{id}": {
+      "get": {
+        "tags": [
+          "assures"
+        ],
+        "summary": "Récupérer un assuré",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "item": {
+                      "$ref": "#/components/schemas/Assure"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "assures"
+        ],
+        "summary": "Modifier un assuré",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "utilisateur_id": {
+                    "type": "integer"
+                  },
+                  "nom": {
+                    "type": "string"
+                  },
+                  "prenom": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  },
+                  "telephone": {
+                    "type": "string"
+                  },
+                  "adresse": {
+                    "type": "string"
+                  },
+                  "type_assure": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "item": {
+                      "$ref": "#/components/schemas/Assure"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "assures"
+        ],
+        "summary": "Supprimer un assuré",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      }
+    },
+    "/api/contrats": {
+      "get": {
+        "tags": [
+          "contrats"
+        ],
+        "summary": "Lister les contrats",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Contrat"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "contrats"
+        ],
+        "summary": "Créer un contrat",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "assure_id": {
+                    "type": "integer"
+                  },
+                  "numero_contrat": {
+                    "type": "string"
+                  },
+                  "type_contrat": {
+                    "type": "string"
+                  },
+                  "franchise": {
+                    "type": "number"
+                  },
+                  "date_debut": {
+                    "type": "string",
+                    "format": "date"
+                  },
+                  "date_fin": {
+                    "type": "string",
+                    "format": "date"
+                  },
+                  "statut": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "assure_id",
+                  "numero_contrat",
+                  "type_contrat"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "item": {
+                      "$ref": "#/components/schemas/Contrat"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/contrats/{id}": {
+      "get": {
+        "tags": [
+          "contrats"
+        ],
+        "summary": "Récupérer un contrat",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "item": {
+                      "$ref": "#/components/schemas/Contrat"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "contrats"
+        ],
+        "summary": "Modifier un contrat",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "assure_id": {
+                    "type": "integer"
+                  },
+                  "numero_contrat": {
+                    "type": "string"
+                  },
+                  "type_contrat": {
+                    "type": "string"
+                  },
+                  "franchise": {
+                    "type": "number"
+                  },
+                  "date_debut": {
+                    "type": "string",
+                    "format": "date"
+                  },
+                  "date_fin": {
+                    "type": "string",
+                    "format": "date"
+                  },
+                  "statut": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "item": {
+                      "$ref": "#/components/schemas/Contrat"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "contrats"
+        ],
+        "summary": "Supprimer un contrat",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      }
+    },
+    "/api/vehicules": {
+      "get": {
+        "tags": [
+          "vehicules"
+        ],
+        "summary": "Lister les vehicules",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Vehicule"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "vehicules"
+        ],
+        "summary": "Créer un véhicule",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "contrat_id": {
+                    "type": "integer"
+                  },
+                  "immatriculation": {
+                    "type": "string"
+                  },
+                  "marque": {
+                    "type": "string"
+                  },
+                  "modele": {
+                    "type": "string"
+                  },
+                  "valeur_argus": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "contrat_id",
+                  "immatriculation"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "item": {
+                      "$ref": "#/components/schemas/Vehicule"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/vehicules/{id}": {
+      "get": {
+        "tags": [
+          "vehicules"
+        ],
+        "summary": "Récupérer un véhicule",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "item": {
+                      "$ref": "#/components/schemas/Vehicule"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "vehicules"
+        ],
+        "summary": "Modifier un véhicule",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "contrat_id": {
+                    "type": "integer"
+                  },
+                  "immatriculation": {
+                    "type": "string"
+                  },
+                  "marque": {
+                    "type": "string"
+                  },
+                  "modele": {
+                    "type": "string"
+                  },
+                  "valeur_argus": {
+                    "type": "number"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "item": {
+                      "$ref": "#/components/schemas/Vehicule"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "vehicules"
+        ],
+        "summary": "Supprimer un véhicule",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      }
+    },
+    "/api/sinistres": {
+      "get": {
+        "tags": [
+          "sinistres"
+        ],
+        "summary": "Lister les sinistres",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Sinistre"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "sinistres"
+        ],
+        "summary": "Créer un sinistre",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "contrat_id": {
+                    "type": "integer"
+                  },
+                  "vehicule_id": {
+                    "type": "integer"
+                  },
+                  "cree_par": {
+                    "type": "integer"
+                  },
+                  "date_heure_appel": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "date_heure_sinistre": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "conducteur_nom": {
+                    "type": "string"
+                  },
+                  "conducteur_prenom": {
+                    "type": "string"
+                  },
+                  "conducteur_est_assure": {
+                    "type": "boolean"
+                  },
+                  "contexte": {
+                    "type": "string"
+                  },
+                  "responsabilite_engagee": {
+                    "type": "boolean"
+                  },
+                  "pourcentage_responsabilite": {
+                    "type": "integer"
+                  },
+                  "statut": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "contrat_id",
+                  "vehicule_id",
+                  "cree_par",
+                  "date_heure_appel",
+                  "date_heure_sinistre",
+                  "conducteur_nom",
+                  "conducteur_prenom",
+                  "conducteur_est_assure",
+                  "contexte",
+                  "responsabilite_engagee",
+                  "pourcentage_responsabilite",
+                  "statut"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "item": {
+                      "$ref": "#/components/schemas/Sinistre"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/sinistres/{id}": {
+      "get": {
+        "tags": [
+          "sinistres"
+        ],
+        "summary": "Récupérer un sinistre",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "item": {
+                      "$ref": "#/components/schemas/Sinistre"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "sinistres"
+        ],
+        "summary": "Modifier un sinistre",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "contrat_id": {
+                    "type": "integer"
+                  },
+                  "vehicule_id": {
+                    "type": "integer"
+                  },
+                  "cree_par": {
+                    "type": "integer"
+                  },
+                  "date_heure_appel": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "date_heure_sinistre": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "conducteur_nom": {
+                    "type": "string"
+                  },
+                  "conducteur_prenom": {
+                    "type": "string"
+                  },
+                  "conducteur_est_assure": {
+                    "type": "boolean"
+                  },
+                  "contexte": {
+                    "type": "string"
+                  },
+                  "responsabilite_engagee": {
+                    "type": "boolean"
+                  },
+                  "pourcentage_responsabilite": {
+                    "type": "integer"
+                  },
+                  "statut": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "item": {
+                      "$ref": "#/components/schemas/Sinistre"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "sinistres"
+        ],
+        "summary": "Supprimer un sinistre",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      }
+    },
+    "/api/dossiers": {
+      "get": {
+        "tags": [
+          "dossiers"
+        ],
+        "summary": "Lister les dossiers",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Dossier"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "dossiers"
+        ],
+        "summary": "Créer un dossier",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "sinistre_id": {
+                    "type": "integer"
+                  },
+                  "numero_dossier": {
+                    "type": "string"
+                  },
+                  "charge_suivi_id": {
+                    "type": "integer"
+                  },
+                  "gestionnaire_id": {
+                    "type": "integer"
+                  },
+                  "scenario": {
+                    "type": "string"
+                  },
+                  "statut": {
+                    "type": "string"
+                  },
+                  "date_ouverture": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "date_cloture": {
+                    "type": "string",
+                    "format": "date-time"
+                  }
+                },
+                "required": [
+                  "sinistre_id",
+                  "numero_dossier",
+                  "scenario",
+                  "statut"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "item": {
+                      "$ref": "#/components/schemas/Dossier"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/dossiers/{id}": {
+      "get": {
+        "tags": [
+          "dossiers"
+        ],
+        "summary": "Récupérer un dossier",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "item": {
+                      "$ref": "#/components/schemas/Dossier"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "dossiers"
+        ],
+        "summary": "Modifier un dossier",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "sinistre_id": {
+                    "type": "integer"
+                  },
+                  "numero_dossier": {
+                    "type": "string"
+                  },
+                  "charge_suivi_id": {
+                    "type": "integer"
+                  },
+                  "gestionnaire_id": {
+                    "type": "integer"
+                  },
+                  "scenario": {
+                    "type": "string"
+                  },
+                  "statut": {
+                    "type": "string"
+                  },
+                  "date_ouverture": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "date_cloture": {
+                    "type": "string",
+                    "format": "date-time"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "item": {
+                      "$ref": "#/components/schemas/Dossier"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "dossiers"
+        ],
+        "summary": "Supprimer un dossier",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      }
+    },
+    "/api/etapes-dossier": {
+      "get": {
+        "tags": [
+          "etapes dossier"
+        ],
+        "summary": "Lister les etapes dossier",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/EtapeDossier"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "etapes dossier"
+        ],
+        "summary": "Créer un étape dossier",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "dossier_id": {
+                    "type": "integer"
+                  },
+                  "nom_etape": {
+                    "type": "string"
+                  },
+                  "statut": {
+                    "type": "string"
+                  },
+                  "date_debut": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "date_fin": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "commentaire": {
+                    "type": "string"
+                  },
+                  "validation_requise": {
+                    "type": "boolean"
+                  },
+                  "validation_effectuee": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "dossier_id",
+                  "nom_etape",
+                  "statut"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "item": {
+                      "$ref": "#/components/schemas/EtapeDossier"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/etapes-dossier/{id}": {
+      "get": {
+        "tags": [
+          "etapes dossier"
+        ],
+        "summary": "Récupérer un étape dossier",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "item": {
+                      "$ref": "#/components/schemas/EtapeDossier"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "etapes dossier"
+        ],
+        "summary": "Modifier un étape dossier",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "dossier_id": {
+                    "type": "integer"
+                  },
+                  "nom_etape": {
+                    "type": "string"
+                  },
+                  "statut": {
+                    "type": "string"
+                  },
+                  "date_debut": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "date_fin": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "commentaire": {
+                    "type": "string"
+                  },
+                  "validation_requise": {
+                    "type": "boolean"
+                  },
+                  "validation_effectuee": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "item": {
+                      "$ref": "#/components/schemas/EtapeDossier"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "etapes dossier"
+        ],
+        "summary": "Supprimer un étape dossier",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      }
+    },
+    "/api/documents": {
+      "get": {
+        "tags": [
+          "documents"
+        ],
+        "summary": "Lister les documents",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Document"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "documents"
+        ],
+        "summary": "Créer un document",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "sinistre_id": {
+                    "type": "integer"
+                  },
+                  "dossier_id": {
+                    "type": "integer"
+                  },
+                  "etape_id": {
+                    "type": "integer"
+                  },
+                  "type_document": {
+                    "type": "string"
+                  },
+                  "nom_fichier": {
+                    "type": "string"
+                  },
+                  "chemin_fichier": {
+                    "type": "string"
+                  },
+                  "date_depot": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "valide": {
+                    "type": "boolean"
+                  },
+                  "valide_par": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "type_document",
+                  "nom_fichier",
+                  "chemin_fichier"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "item": {
+                      "$ref": "#/components/schemas/Document"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/documents/{id}": {
+      "get": {
+        "tags": [
+          "documents"
+        ],
+        "summary": "Récupérer un document",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "item": {
+                      "$ref": "#/components/schemas/Document"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "documents"
+        ],
+        "summary": "Modifier un document",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "sinistre_id": {
+                    "type": "integer"
+                  },
+                  "dossier_id": {
+                    "type": "integer"
+                  },
+                  "etape_id": {
+                    "type": "integer"
+                  },
+                  "type_document": {
+                    "type": "string"
+                  },
+                  "nom_fichier": {
+                    "type": "string"
+                  },
+                  "chemin_fichier": {
+                    "type": "string"
+                  },
+                  "date_depot": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "valide": {
+                    "type": "boolean"
+                  },
+                  "valide_par": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "item": {
+                      "$ref": "#/components/schemas/Document"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "documents"
+        ],
+        "summary": "Supprimer un document",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      }
+    },
+    "/api/notifications": {
+      "get": {
+        "tags": [
+          "notifications"
+        ],
+        "summary": "Lister les notifications",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Notification"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "notifications"
+        ],
+        "summary": "Créer un notification",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "utilisateur_id": {
+                    "type": "integer"
+                  },
+                  "assure_id": {
+                    "type": "integer"
+                  },
+                  "dossier_id": {
+                    "type": "integer"
+                  },
+                  "type_notification": {
+                    "type": "string"
+                  },
+                  "message": {
+                    "type": "string"
+                  },
+                  "date_envoi": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "statut": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "type_notification",
+                  "message"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "item": {
+                      "$ref": "#/components/schemas/Notification"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/notifications/{id}": {
+      "get": {
+        "tags": [
+          "notifications"
+        ],
+        "summary": "Récupérer un notification",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "item": {
+                      "$ref": "#/components/schemas/Notification"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "notifications"
+        ],
+        "summary": "Modifier un notification",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "utilisateur_id": {
+                    "type": "integer"
+                  },
+                  "assure_id": {
+                    "type": "integer"
+                  },
+                  "dossier_id": {
+                    "type": "integer"
+                  },
+                  "type_notification": {
+                    "type": "string"
+                  },
+                  "message": {
+                    "type": "string"
+                  },
+                  "date_envoi": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "statut": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "item": {
+                      "$ref": "#/components/schemas/Notification"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "notifications"
+        ],
+        "summary": "Supprimer un notification",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      }
+    },
+    "/api/historiques": {
+      "get": {
+        "tags": [
+          "historiques"
+        ],
+        "summary": "Lister les historiques",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Historique"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "historiques"
+        ],
+        "summary": "Créer un historique",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "utilisateur_id": {
+                    "type": "integer"
+                  },
+                  "sinistre_id": {
+                    "type": "integer"
+                  },
+                  "dossier_id": {
+                    "type": "integer"
+                  },
+                  "action": {
+                    "type": "string"
+                  },
+                  "date_action": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "details": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "action",
+                  "date_action"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "item": {
+                      "$ref": "#/components/schemas/Historique"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/historiques/{id}": {
+      "get": {
+        "tags": [
+          "historiques"
+        ],
+        "summary": "Récupérer un historique",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "item": {
+                      "$ref": "#/components/schemas/Historique"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "historiques"
+        ],
+        "summary": "Modifier un historique",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "utilisateur_id": {
+                    "type": "integer"
+                  },
+                  "sinistre_id": {
+                    "type": "integer"
+                  },
+                  "dossier_id": {
+                    "type": "integer"
+                  },
+                  "action": {
+                    "type": "string"
+                  },
+                  "date_action": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "details": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "item": {
+                      "$ref": "#/components/schemas/Historique"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "historiques"
+        ],
+        "summary": "Supprimer un historique",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      }
+    },
+    "/api/auth/login": {
+      "post": {
+        "tags": [
+          "Authentification"
+        ],
+        "summary": "Connexion utilisateur",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AuthLoginRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Connexion réussie ou code 2FA envoyé",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/LoginSuccessResponse"
+                    },
+                    {
+                      "$ref": "#/components/schemas/Login2FAResponse"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Identifiants invalides"
+          },
+          "403": {
+            "description": "Compte inactif"
+          }
+        }
+      }
+    },
+    "/api/auth/verify-2fa": {
+      "post": {
+        "tags": [
+          "Authentification"
+        ],
+        "summary": "Valider le code 2FA par email",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Verify2FARequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Connexion validée",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginSuccessResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Code invalide ou expiré"
+          }
+        }
+      }
+    },
+    "/api/auth/request-password-reset": {
+      "post": {
+        "tags": [
+          "Authentification"
+        ],
+        "summary": "Demander une réinitialisation du mot de passe",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestPasswordResetRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Demande prise en compte"
+          }
+        }
+      }
+    },
+    "/api/auth/reset-password": {
+      "post": {
+        "tags": [
+          "Authentification"
+        ],
+        "summary": "Réinitialiser le mot de passe avec un jeton",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResetPasswordRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Mot de passe réinitialisé"
+          },
+          "401": {
+            "description": "Jeton invalide ou expiré"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Role": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "nom": {
+            "$ref": "#/components/schemas/RoleEnum"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "role_id": {
+            "type": "integer"
+          },
+          "nom": {
+            "type": "string"
+          },
+          "prenom": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "telephone": {
+            "type": "string"
+          },
+          "mot_de_passe": {
+            "type": "string"
+          },
+          "statut": {
+            "$ref": "#/components/schemas/UserStatusEnum"
+          },
+          "double_auth_active": {
+            "type": "boolean"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Assure": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "utilisateur_id": {
+            "type": "integer"
+          },
+          "nom": {
+            "type": "string"
+          },
+          "prenom": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "telephone": {
+            "type": "string"
+          },
+          "adresse": {
+            "type": "string"
+          },
+          "type_assure": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Contrat": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "assure_id": {
+            "type": "integer"
+          },
+          "numero_contrat": {
+            "type": "string"
+          },
+          "type_contrat": {
+            "type": "string"
+          },
+          "franchise": {
+            "type": "number"
+          },
+          "date_debut": {
+            "type": "string",
+            "format": "date"
+          },
+          "date_fin": {
+            "type": "string",
+            "format": "date"
+          },
+          "statut": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Vehicule": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "contrat_id": {
+            "type": "integer"
+          },
+          "immatriculation": {
+            "type": "string"
+          },
+          "marque": {
+            "type": "string"
+          },
+          "modele": {
+            "type": "string"
+          },
+          "valeur_argus": {
+            "type": "number"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Sinistre": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "contrat_id": {
+            "type": "integer"
+          },
+          "vehicule_id": {
+            "type": "integer"
+          },
+          "cree_par": {
+            "type": "integer"
+          },
+          "date_heure_appel": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "date_heure_sinistre": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "conducteur_nom": {
+            "type": "string"
+          },
+          "conducteur_prenom": {
+            "type": "string"
+          },
+          "conducteur_est_assure": {
+            "type": "boolean"
+          },
+          "contexte": {
+            "type": "string"
+          },
+          "responsabilite_engagee": {
+            "type": "boolean"
+          },
+          "pourcentage_responsabilite": {
+            "type": "integer"
+          },
+          "statut": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Dossier": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "sinistre_id": {
+            "type": "integer"
+          },
+          "numero_dossier": {
+            "type": "string"
+          },
+          "charge_suivi_id": {
+            "type": "integer"
+          },
+          "gestionnaire_id": {
+            "type": "integer"
+          },
+          "scenario": {
+            "type": "string"
+          },
+          "statut": {
+            "type": "string"
+          },
+          "date_ouverture": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "date_cloture": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "EtapeDossier": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "dossier_id": {
+            "type": "integer"
+          },
+          "nom_etape": {
+            "type": "string"
+          },
+          "statut": {
+            "type": "string"
+          },
+          "date_debut": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "date_fin": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "commentaire": {
+            "type": "string"
+          },
+          "validation_requise": {
+            "type": "boolean"
+          },
+          "validation_effectuee": {
+            "type": "boolean"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Document": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "sinistre_id": {
+            "type": "integer"
+          },
+          "dossier_id": {
+            "type": "integer"
+          },
+          "etape_id": {
+            "type": "integer"
+          },
+          "type_document": {
+            "type": "string"
+          },
+          "nom_fichier": {
+            "type": "string"
+          },
+          "chemin_fichier": {
+            "type": "string"
+          },
+          "date_depot": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "valide": {
+            "type": "boolean"
+          },
+          "valide_par": {
+            "type": "integer"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Notification": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "utilisateur_id": {
+            "type": "integer"
+          },
+          "assure_id": {
+            "type": "integer"
+          },
+          "dossier_id": {
+            "type": "integer"
+          },
+          "type_notification": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "date_envoi": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "statut": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Historique": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "utilisateur_id": {
+            "type": "integer"
+          },
+          "sinistre_id": {
+            "type": "integer"
+          },
+          "dossier_id": {
+            "type": "integer"
+          },
+          "action": {
+            "type": "string"
+          },
+          "date_action": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "details": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "RoleEnum": {
+        "type": "string",
+        "enum": [
+          "ADMIN",
+          "GESTIONNAIRE_PORTEFEUILLE",
+          "CHARGE_SUIVI",
+          "CHARGE_CLIENTELE",
+          "ASSURE"
+        ]
+      },
+      "UserStatusEnum": {
+        "type": "string",
+        "enum": [
+          "actif",
+          "inactif"
+        ]
+      },
+      "AuthLoginRequest": {
+        "type": "object",
+        "required": [
+          "email",
+          "mot_de_passe"
+        ],
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "mot_de_passe": {
+            "type": "string"
+          }
+        }
+      },
+      "Verify2FARequest": {
+        "type": "object",
+        "required": [
+          "email",
+          "code"
+        ],
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "code": {
+            "type": "string",
+            "example": "123456"
+          }
+        }
+      },
+      "RequestPasswordResetRequest": {
+        "type": "object",
+        "required": [
+          "email"
+        ],
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email"
+          }
+        }
+      },
+      "ResetPasswordRequest": {
+        "type": "object",
+        "required": [
+          "email",
+          "token",
+          "nouveau_mot_de_passe"
+        ],
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "token": {
+            "type": "string"
+          },
+          "nouveau_mot_de_passe": {
+            "type": "string"
+          }
+        }
+      },
+      "AuthUser": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "role_id": {
+            "type": "integer"
+          },
+          "nom": {
+            "type": "string"
+          },
+          "prenom": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "telephone": {
+            "type": "string",
+            "nullable": true
+          },
+          "statut": {
+            "$ref": "#/components/schemas/UserStatusEnum"
+          },
+          "double_auth_active": {
+            "type": "boolean"
+          },
+          "role": {
+            "type": "object",
+            "nullable": true,
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "nom": {
+                "$ref": "#/components/schemas/RoleEnum"
+              }
+            }
+          }
+        }
+      },
+      "LoginSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "requires_2fa": {
+            "type": "boolean",
+            "example": false
+          },
+          "user": {
+            "$ref": "#/components/schemas/AuthUser"
+          }
+        }
+      },
+      "Login2FAResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "requires_2fa": {
+            "type": "boolean",
+            "example": true
+          },
+          "email": {
+            "type": "string"
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+    }
+  }
+}
