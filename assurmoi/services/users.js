@@ -3,6 +3,7 @@ const { USER_STATUS } = require("../config/enums");
 const { created, noContent, notFound, ok, badRequest, internalError } = require("../utils/http");
 const { logHistory } = require("../utils/history");
 const { hashPassword } = require("../utils/password");
+const { sendWelcomeEmail } = require("./mail");
 
 function enrichUser(userInstance) {
   const user = userInstance.get ? userInstance.get({ plain: true }) : userInstance;
@@ -76,6 +77,8 @@ async function createUser(req, res) {
       action: "UTILISATEUR_CREATE",
       details: JSON.stringify(enrichUser(persisted)),
     });
+
+    await sendWelcomeEmail(persisted);
 
     return created(res, { data: enrichUser(persisted) });
   } catch (error) {

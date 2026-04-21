@@ -10,6 +10,7 @@ const etapesDossierRoutes = require("./etapes-dossier");
 const documentsRoutes = require("./documents");
 const notificationsRoutes = require("./notifications");
 const historiquesRoutes = require("./historiques");
+const mailRoutes = require("./mail");
 const { authenticate } = require("../middlewares/auth");
 
 function initRoutes(app) {
@@ -25,6 +26,7 @@ function initRoutes(app) {
   app.use("/api/documents", authenticate, documentsRoutes);
   app.use("/api/notifications", authenticate, notificationsRoutes);
   app.use("/api/historiques", authenticate, historiquesRoutes);
+  app.use("/api/mail", authenticate, mailRoutes);
 }
 
 module.exports = initRoutes;

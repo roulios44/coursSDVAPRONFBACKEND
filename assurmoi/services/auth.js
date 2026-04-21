@@ -6,6 +6,7 @@ const { USER_STATUS } = require("../config/enums");
 const { generateAuthTokenDetails, hashAuthToken } = require("../utils/auth-token");
 const { logHistory } = require("../utils/history");
 const { comparePassword, hashPassword } = require("../utils/password");
+const { sendTwoFactorCodeEmail, sendPasswordResetEmail } = require("./mail");
 
 async function issueStoredAuthToken(user) {
   const { token, expiresAt } = generateAuthTokenDetails(user);
@@ -51,12 +52,13 @@ async function login(req, res) {
         expires_at: new Date(Date.now() + 10 * 60 * 1000),
       });
 
+      await sendTwoFactorCodeEmail(user, code);
+
       return ok(res, {
-        message: "Code 2FA généré. Vérifiez votre email ou SMS.",
+        message: "Code 2FA généré. Vérifiez votre email.",
         data: {
           utilisateur_id: user.id,
           challenge: "2fa_required",
-          code_demo: code,
         },
       });
     }
@@ -158,9 +160,11 @@ async function forgotPassword(req, res) {
       expires_at: new Date(Date.now() + 60 * 60 * 1000),
     });
 
+    await sendPasswordResetEmail(user, token);
+
     return ok(res, {
-      message: "Token de réinitialisation généré",
-      data: { token_demo: token, utilisateur_id: user.id },
+      message: "Email de réinitialisation envoyé",
+      data: { utilisateur_id: user.id },
     });
   } catch (error) {
     return internalError(res, error);
