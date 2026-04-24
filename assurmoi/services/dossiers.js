@@ -92,4 +92,24 @@ async function update(req, res) {
   }
 }
 
-module.exports = { list, getOne, create, update };
+async function remove(req, res) {
+  try {
+    const dossier = await Dossier.findByPk(Number(req.params.id));
+    if (!dossier) return notFound(res, "Dossier");
+
+    await logHistory({
+      utilisateur_id: dossier.charge_suivi_id || dossier.gestionnaire_id || null,
+      dossier_id: dossier.id,
+      sinistre_id: dossier.sinistre_id,
+      action: "DOSSIER_DELETE",
+      details: JSON.stringify(dossier.get({ plain: true })),
+    });
+
+    await dossier.destroy();
+    return ok(res, { message: "Dossier supprimé", data: null });
+  } catch (error) {
+    return internalError(res, error);
+  }
+}
+
+module.exports = { list, getOne, create, update, remove };

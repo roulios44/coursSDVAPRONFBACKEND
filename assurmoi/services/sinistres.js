@@ -1,4 +1,5 @@
-const { Sinistre, Dossier, Contrat, Vehicule } = require("../models");
+const path = require("path");
+const { Sinistre, Dossier, Contrat, Vehicule, Document } = require("../models");
 const { created, notFound, ok, badRequest, internalError } = require("../utils/http");
 const { logHistory } = require("../utils/history");
 const { SINISTRE_STATUS, DOSSIER_STATUS, DOSSIER_SCENARIOS } = require("../config/enums");
@@ -80,7 +81,13 @@ async function list(req, res) {
 async function getOne(req, res) {
   try {
     const item = await Sinistre.findByPk(Number(req.params.id), {
-      include: [{ association: "contrat" }, { association: "vehicule" }, { association: "createur" }, { association: "dossier" }],
+      include: [
+        { association: "contrat" },
+        { association: "vehicule" },
+        { association: "createur" },
+        { association: "dossier" },
+        { association: "documents" },
+      ],
     });
     if (!item) return notFound(res, "Sinistre");
     return ok(res, { data: item.get({ plain: true }) });
@@ -173,4 +180,64 @@ async function update(req, res) {
   }
 }
 
-module.exports = { list, getOne, create, update };
+async function remove(req, res) {
+  try {
+    const current = await Sinistre.findByPk(Number(req.params.id));
+    if (!current) return notFound(res, "Sinistre");
+
+    await logHistory({
+      utilisateur_id: current.cree_par,
+      sinistre_id: current.id,
+      action: "SINISTRE_DELETE",
+      details: JSON.stringify(current.get({ plain: true })),
+    });
+
+    await current.destroy();
+    return ok(res, { message: "Sinistre supprimé", data: null });
+  } catch (error) {
+    return internalError(res, error);
+  }
+}
+
+async function uploadDocument(req, res) {
+  try {
+    const sinistreId = Number(req.params.id);
+    const sinistre = await Sinistre.findByPk(sinistreId, {
+      include: [{ association: "dossier" }],
+    });
+
+    if (!sinistre) {
+      return notFound(res, "Sinistre");
+    }
+
+    if (!req.file) {
+      return badRequest(res, "Aucun fichier n'a ete transmis");
+    }
+
+    const document = await Document.create({
+      sinistre_id: sinistreId,
+      dossier_id: sinistre.dossier?.id || null,
+      etape_id: null,
+      type_document: req.body.type_document || "piece_jointe",
+      nom_fichier: req.file.originalname,
+      chemin_fichier: `/files/${path.basename(req.file.path)}`,
+      date_depot: new Date(),
+      valide: false,
+      valide_par: null,
+    });
+
+    await logHistory({
+      utilisateur_id: req.user?.id || sinistre.cree_par || null,
+      sinistre_id: sinistreId,
+      dossier_id: sinistre.dossier?.id || null,
+      action: "DOCUMENT_UPLOAD",
+      details: JSON.stringify(document.get({ plain: true })),
+    });
+
+    return created(res, { data: document.get({ plain: true }) });
+  } catch (error) {
+    return internalError(res, error);
+  }
+}
+
+module.exports = { list, getOne, create, update, remove, uploadDocument };
