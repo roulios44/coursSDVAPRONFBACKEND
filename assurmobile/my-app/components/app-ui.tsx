@@ -182,7 +182,8 @@ export const appStyles = StyleSheet.create({
   },
   row: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
+    flexWrap: 'wrap',
     justifyContent: 'space-between',
     gap: 12,
   },
@@ -204,6 +205,12 @@ export const appStyles = StyleSheet.create({
     fontWeight: '600',
     lineHeight: 22,
   },
+  splitItem: {
+    flexBasis: 140,
+    flexGrow: 1,
+    gap: 4,
+    minWidth: 0,
+  },
   separator: {
     height: 1,
     backgroundColor: palette.border,
@@ -217,7 +224,9 @@ const styles = StyleSheet.create({
     backgroundColor: palette.bg,
   },
   scrollContent: {
+    flexGrow: 1,
     padding: 20,
+    paddingBottom: 120,
     gap: 16,
   },
   card: {
@@ -234,8 +243,9 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   cardHeader: {
-    alignItems: 'center',
+    alignItems: 'flex-start',
     flexDirection: 'row',
+    flexWrap: 'wrap',
     gap: 12,
     justifyContent: 'space-between',
   },
@@ -255,10 +265,12 @@ const styles = StyleSheet.create({
   },
   button: {
     alignItems: 'center',
+    alignSelf: 'flex-start',
     backgroundColor: palette.primary,
     borderRadius: 16,
     minHeight: 50,
     justifyContent: 'center',
+    maxWidth: '100%',
     paddingHorizontal: 18,
   },
   buttonSecondary: {
@@ -279,6 +291,8 @@ const styles = StyleSheet.create({
     color: '#FFF8F1',
     fontSize: 15,
     fontWeight: '800',
+    flexShrink: 1,
+    textAlign: 'center',
   },
   buttonLabelSecondary: {
     color: palette.ink,
@@ -323,7 +337,7 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     flex: 1,
     gap: 4,
-    minWidth: 140,
+    minWidth: 0,
     padding: 16,
   },
   metricValue: {

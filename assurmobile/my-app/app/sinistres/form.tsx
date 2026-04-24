@@ -290,15 +290,15 @@ export default function SinistreFormScreen() {
               <View
                 key={document.uri}
                 style={{
-                  alignItems: 'center',
                   backgroundColor: '#FBF6F0',
                   borderRadius: 16,
                   flexDirection: 'row',
+                  flexWrap: 'wrap',
                   gap: 10,
                   justifyContent: 'space-between',
                   padding: 14,
                 }}>
-                <View style={{ flex: 1, gap: 4 }}>
+                <View style={{ flexBasis: 180, flexGrow: 1, gap: 4, minWidth: 0 }}>
                   <Text style={appStyles.fieldValue}>{document.name}</Text>
                   <Text style={appStyles.subtitle}>
                     {document.mimeType || 'Type inconnu'}
@@ -325,15 +325,16 @@ export default function SinistreFormScreen() {
                   backgroundColor: '#FBF6F0',
                   borderRadius: 16,
                   flexDirection: 'row',
+                  flexWrap: 'wrap',
                   gap: 10,
                   justifyContent: 'space-between',
                   padding: 14,
                 }}>
-                <View style={{ flex: 1, gap: 4 }}>
+                <View style={{ flexBasis: 180, flexGrow: 1, gap: 4, minWidth: 0 }}>
                   <Text style={appStyles.fieldValue}>{document.nom_fichier}</Text>
                   <Text style={appStyles.subtitle}>{document.chemin_fichier || 'Chemin non disponible'}</Text>
                 </View>
-                <View style={{ alignItems: 'flex-end', gap: 8 }}>
+                <View style={{ alignItems: 'flex-start', gap: 8 }}>
                   <Badge label={document.valide ? 'Valide' : 'Stocke'} tone={document.valide ? 'success' : 'default'} />
                   {getPublicFileUrl(document.chemin_fichier) ? (
                     <ExternalLink
@@ -368,10 +369,11 @@ export default function SinistreFormScreen() {
               style={{
                 backgroundColor: pourcentage === item ? '#C26A3D' : '#FBF6F0',
                 borderRadius: 999,
+                maxWidth: '100%',
                 paddingHorizontal: 14,
                 paddingVertical: 10,
               }}>
-              <Text style={{ color: pourcentage === item ? '#FFF8F1' : palette.ink, fontWeight: '800' }}>
+              <Text style={{ color: pourcentage === item ? '#FFF8F1' : palette.ink, fontWeight: '800', flexShrink: 1 }}>
                 {item}%
               </Text>
             </Pressable>
@@ -385,10 +387,11 @@ export default function SinistreFormScreen() {
               style={{
                 backgroundColor: statut === item ? '#C26A3D' : '#FBF6F0',
                 borderRadius: 999,
+                maxWidth: '100%',
                 paddingHorizontal: 14,
                 paddingVertical: 10,
               }}>
-              <Text style={{ color: statut === item ? '#FFF8F1' : palette.ink, fontWeight: '800' }}>
+              <Text style={{ color: statut === item ? '#FFF8F1' : palette.ink, fontWeight: '800', flexShrink: 1 }}>
                 {item}
               </Text>
             </Pressable>

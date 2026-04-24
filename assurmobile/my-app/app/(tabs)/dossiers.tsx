@@ -139,11 +139,11 @@ export default function DossiersScreen() {
             subtitle={`Scenario ${humanizeStatus(dossier.scenario)}`}
             right={<Badge label={humanizeStatus(dossier.statut)} tone={getBadgeTone(dossier.statut)} />}>
             <View style={appStyles.row}>
-              <View style={{ flex: 1, gap: 4 }}>
+              <View style={appStyles.splitItem}>
                 <Text style={appStyles.fieldLabel}>Ouverture</Text>
                 <Text style={appStyles.fieldValue}>{formatDateTime(dossier.date_ouverture)}</Text>
               </View>
-              <View style={{ flex: 1, gap: 4 }}>
+              <View style={appStyles.splitItem}>
                 <Text style={appStyles.fieldLabel}>Charge suivi</Text>
                 <Text style={appStyles.fieldValue}>
                   {dossier.chargeSuivi ? `${dossier.chargeSuivi.prenom} ${dossier.chargeSuivi.nom}` : 'Non assigne'}

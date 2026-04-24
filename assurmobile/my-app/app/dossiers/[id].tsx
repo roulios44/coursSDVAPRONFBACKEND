@@ -87,11 +87,11 @@ export default function DossierDetailScreen() {
         </Text>
         <Text style={appStyles.subtitle}>{dossier.sinistre?.contexte || 'Aucun contexte transmis.'}</Text>
         <View style={appStyles.row}>
-          <View style={{ flex: 1, gap: 4 }}>
+          <View style={appStyles.splitItem}>
             <Text style={appStyles.fieldLabel}>Accident</Text>
             <Text style={appStyles.fieldValue}>{formatDateTime(dossier.sinistre?.date_heure_sinistre)}</Text>
           </View>
-          <View style={{ flex: 1, gap: 4 }}>
+          <View style={appStyles.splitItem}>
             <Text style={appStyles.fieldLabel}>Responsabilite</Text>
             <Text style={appStyles.fieldValue}>
               {dossier.sinistre?.responsabilite_engagee
@@ -107,7 +107,7 @@ export default function DossierDetailScreen() {
           dossier.etapes.map((etape) => (
             <View key={etape.id} style={{ gap: 6 }}>
               <View style={appStyles.row}>
-                <Text style={appStyles.fieldValue}>{etape.nom_etape}</Text>
+                <Text style={[appStyles.fieldValue, { flex: 1, minWidth: 0 }]}>{etape.nom_etape}</Text>
                 <Badge label={humanizeStatus(etape.statut)} tone={getBadgeTone(etape.statut)} />
               </View>
               <Text style={appStyles.subtitle}>{etape.commentaire || 'Aucun commentaire sur cette etape.'}</Text>
@@ -133,7 +133,7 @@ export default function DossierDetailScreen() {
           dossier.documents.map((document) => (
             <View key={document.id} style={{ gap: 4 }}>
               <View style={appStyles.row}>
-                <Text style={appStyles.fieldValue}>{document.nom_fichier}</Text>
+                <Text style={[appStyles.fieldValue, { flex: 1, minWidth: 0 }]}>{document.nom_fichier}</Text>
                 <Badge label={document.valide ? 'Valide' : 'En attente'} tone={document.valide ? 'success' : 'warning'} />
               </View>
               <Text style={appStyles.subtitle}>

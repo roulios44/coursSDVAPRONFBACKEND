@@ -143,23 +143,23 @@ export default function SinistresScreen() {
             </Text>
             <Text style={appStyles.subtitle}>{sinistre.contexte}</Text>
             <View style={appStyles.row}>
-              <View style={{ flex: 1, gap: 4 }}>
+              <View style={appStyles.splitItem}>
                 <Text style={appStyles.fieldLabel}>Appel</Text>
                 <Text style={appStyles.fieldValue}>{formatDateTime(sinistre.date_heure_appel)}</Text>
               </View>
-              <View style={{ flex: 1, gap: 4 }}>
+              <View style={appStyles.splitItem}>
                 <Text style={appStyles.fieldLabel}>Sinistre</Text>
                 <Text style={appStyles.fieldValue}>{formatDateTime(sinistre.date_heure_sinistre)}</Text>
               </View>
             </View>
             <View style={appStyles.row}>
-              <View style={{ flex: 1, gap: 4 }}>
+              <View style={appStyles.splitItem}>
                 <Text style={appStyles.fieldLabel}>Responsabilite</Text>
                 <Text style={appStyles.fieldValue}>
                   {sinistre.responsabilite_engagee ? `${sinistre.pourcentage_responsabilite}%` : '0%'}
                 </Text>
               </View>
-              <View style={{ flex: 1, gap: 4 }}>
+              <View style={appStyles.splitItem}>
                 <Text style={appStyles.fieldLabel}>Createur</Text>
                 <Text style={appStyles.fieldValue}>
                   {sinistre.createur ? `${sinistre.createur.prenom} ${sinistre.createur.nom}` : 'Non renseigne'}

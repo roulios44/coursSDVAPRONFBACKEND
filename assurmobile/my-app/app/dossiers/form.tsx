@@ -165,10 +165,11 @@ export default function DossierFormScreen() {
               style={{
                 backgroundColor: scenario === item ? '#C26A3D' : '#FBF6F0',
                 borderRadius: 999,
+                maxWidth: '100%',
                 paddingHorizontal: 14,
                 paddingVertical: 10,
               }}>
-              <Text style={{ color: scenario === item ? '#FFF8F1' : palette.ink, fontWeight: '800' }}>
+              <Text style={{ color: scenario === item ? '#FFF8F1' : palette.ink, fontWeight: '800', flexShrink: 1 }}>
                 {item}
               </Text>
             </Pressable>
@@ -185,10 +186,11 @@ export default function DossierFormScreen() {
               style={{
                 backgroundColor: statut === item ? '#C26A3D' : '#FBF6F0',
                 borderRadius: 999,
+                maxWidth: '100%',
                 paddingHorizontal: 14,
                 paddingVertical: 10,
               }}>
-              <Text style={{ color: statut === item ? '#FFF8F1' : palette.ink, fontWeight: '800' }}>
+              <Text style={{ color: statut === item ? '#FFF8F1' : palette.ink, fontWeight: '800', flexShrink: 1 }}>
                 {item}
               </Text>
             </Pressable>

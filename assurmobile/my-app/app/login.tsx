@@ -40,10 +40,10 @@ export default function LoginScreen() {
   }
 
   return (
-    <Screen scroll={false}>
+    <Screen>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        style={{ flex: 1, justifyContent: 'center' }}>
+        style={{ flex: 1 }}>
         <View style={{ gap: 20 }}>
           <View style={{ gap: 6 }}>
             <Text style={appStyles.title}>AssurMoi Mobile</Text>
