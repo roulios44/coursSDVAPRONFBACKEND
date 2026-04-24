@@ -85,6 +85,19 @@ export function getApiBaseUrl() {
 
 export const API_BASE_URL = getApiBaseUrl();
 
+export function getPublicFileUrl(filePath?: string | null) {
+  if (!filePath) {
+    return null;
+  }
+
+  if (/^https?:\/\//i.test(filePath)) {
+    return filePath;
+  }
+
+  const publicBaseUrl = API_BASE_URL.replace(/\/api$/, "");
+  return `${publicBaseUrl}${filePath.startsWith("/") ? filePath : `/${filePath}`}`;
+}
+
 async function parseJson<T>(response: Response): Promise<T | null> {
   const contentType = response.headers.get("content-type") || "";
   if (!contentType.includes("application/json")) {

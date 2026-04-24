@@ -4,10 +4,12 @@ import { useEffect, useMemo, useState } from 'react';
 import { Alert, Pressable, Text, View } from 'react-native';
 
 import { Badge, PrimaryButton, Screen, SectionCard, appStyles, palette } from '@/components/app-ui';
+import { ExternalLink } from '@/components/external-link';
 import { FormField } from '@/components/form-field';
 import { OptionSelector } from '@/components/option-selector';
 import {
   createSinistre,
+  getPublicFileUrl,
   getAssures,
   getContrats,
   getErrorMessage,
@@ -320,7 +322,6 @@ export default function SinistreFormScreen() {
               <View
                 key={document.id}
                 style={{
-                  alignItems: 'center',
                   backgroundColor: '#FBF6F0',
                   borderRadius: 16,
                   flexDirection: 'row',
@@ -332,7 +333,26 @@ export default function SinistreFormScreen() {
                   <Text style={appStyles.fieldValue}>{document.nom_fichier}</Text>
                   <Text style={appStyles.subtitle}>{document.chemin_fichier || 'Chemin non disponible'}</Text>
                 </View>
-                <Badge label={document.valide ? 'Valide' : 'Stocke'} tone={document.valide ? 'success' : 'default'} />
+                <View style={{ alignItems: 'flex-end', gap: 8 }}>
+                  <Badge label={document.valide ? 'Valide' : 'Stocke'} tone={document.valide ? 'success' : 'default'} />
+                  {getPublicFileUrl(document.chemin_fichier) ? (
+                    <ExternalLink
+                      href={getPublicFileUrl(document.chemin_fichier)!}
+                      style={{
+                        backgroundColor: '#C26A3D',
+                        borderRadius: 999,
+                        color: '#FFF8F1',
+                        fontSize: 13,
+                        fontWeight: '800',
+                        overflow: 'hidden',
+                        paddingHorizontal: 12,
+                        paddingVertical: 8,
+                        textAlign: 'center',
+                      }}>
+                      Visualiser
+                    </ExternalLink>
+                  ) : null}
+                </View>
               </View>
             ))}
           </View>
